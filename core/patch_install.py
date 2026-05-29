@@ -131,6 +131,8 @@ def run_package_stage(pkg: Path, repo: Path, package: Path, args: argparse.Names
         cmd.append(args.message)
 
     print(f"== package stage: {script_name} ==")
+    if getattr(args, "stage", "") == "report":
+        print_changed_files_manifest_report(repo, pkg)
     return run(cmd, cwd=repo, env=stage_env(repo, package, pkg, args))
 
 
@@ -294,7 +296,76 @@ def builtin_test(pkg: Path, repo: Path, args: argparse.Namespace) -> int:
     return run_shell(STRUCTURAL_TEST, cwd=repo)
 
 
+# codec-patcher-report-v4:start
+def _codec_patcher_report_package_root(package: Path):
+    package = Path(package)
+    if package.is_dir():
+        return package, None
+    result = package_root(package)
+    if isinstance(result, tuple):
+        return result
+    return result, None
+
+
+def _codec_patcher_report_changed_files(package: Path) -> list[str]:
+    pkg, tmp = _codec_patcher_report_package_root(Path(package))
+    try:
+        manifest = pkg / "changed-files.txt"
+        if not manifest.exists():
+            return []
+        return [
+            line.strip()
+            for line in manifest.read_text(encoding="utf-8").splitlines()
+            if line.strip() and not line.strip().startswith("#")
+        ]
+    finally:
+        if tmp is not None:
+            tmp.cleanup()
+
+
+def print_changed_files_manifest_report(repo: Path, package: Path) -> None:
+    """Print a manifest-driven changed-files report, including untracked files."""
+    changed_files = _codec_patcher_report_changed_files(Path(package))
+
+    print("== report: changed-files.txt ==")
+    if not changed_files:
+        print("(none)")
+        return
+    for item in changed_files:
+        print(item)
+
+    print("== report: changed-files status ==")
+    for item in changed_files:
+        status = subprocess.run(
+            ["git", "status", "--short", "--untracked-files=all", "--", item],
+            cwd=repo,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        output = status.stdout.strip()
+        if output:
+            print(output)
+        else:
+            print(f"   {item}")
+
+    print("== report: changed-files diff stat ==")
+    diff_stat = subprocess.run(
+        ["git", "diff", "--stat", "--"] + changed_files,
+        cwd=repo,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    if diff_stat.stdout.strip():
+        print(diff_stat.stdout.rstrip())
+    else:
+        print("(no tracked diff stat; see changed-files status for untracked/new files)")
+# codec-patcher-report-v4:end
+
 def builtin_report(repo: Path, args: argparse.Namespace) -> int:
+    # codec-patcher-report-v4: manifest-driven report for tracked and untracked files
+    print_changed_files_manifest_report(repo, Path(args.package))
     print("== git status ==")
     sys.stdout.write(output(["git", "status", "--short", "--untracked-files=all"], cwd=repo))
     print("\n== git diff --stat ==")
