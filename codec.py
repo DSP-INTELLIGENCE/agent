@@ -94,7 +94,7 @@ def build_parser() -> argparse.ArgumentParser:
     prompt.add_argument("text", nargs=argparse.REMAINDER, help="Text to send to the raw /prompt lane")
 
     ground = sub.add_parser("ground", help="Grounded/RAG question lane")
-    ground.add_argument("text", nargs=argparse.REMAINDER, help="Question to send to the grounded /question lane")
+    ground.add_argument("text", nargs=argparse.REMAINDER, help="Question to send to the grounded /ground lane")
 
     patch = sub.add_parser("patch", help="Patch package workflows")
     patch_sub = patch.add_subparsers(dest="patch_command", required=True)
@@ -138,7 +138,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "prompt":
         return _run_text_lane("/prompt", args.text, label="prompt")
     if args.command == "ground":
-        return _run_text_lane("/question", args.text, label="ground")
+        return _run_text_lane("/ground", args.text, label="ground")
     if args.command == "patch":
         return int(args.func(args))
 
