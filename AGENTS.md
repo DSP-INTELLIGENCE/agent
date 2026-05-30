@@ -114,3 +114,13 @@ Use short Codex prompts by default. Use larger handoff prompts only for risky ar
 ## Memory policy
 
 `docs/project-memory.md` is durable repo-local memory. Update it only with stable project facts, accepted decisions, current handoff state, and checked/unchecked milestones. Keep temporary chat context out of it.
+
+<!-- agent-architecture-lanes-adapters-endpoints-v1:start -->
+## Agent architecture notes
+
+Treat Agent as the runtime contract for lanes/routes, adapters/filters, and endpoints/decoders.
+
+Semantic Controllers are external. They may use semantic-router, sentence transformers, embeddings, or classifiers, but Agent should not need their implementation details.
+
+`codec.py` is the clean frontend. `codec-patch.py` is the staged patch operator. `agent.py` and `agent-cli.py` are legacy surfaces.
+<!-- agent-architecture-lanes-adapters-endpoints-v1:end -->

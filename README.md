@@ -113,3 +113,24 @@ For human operators, read:
 6. `docs/CHATGPT_HANDOFF_PROMPT.md`
 
 For coding agents, read `AGENTS.md` first.
+
+<!-- agent-architecture-lanes-adapters-endpoints-v1:start -->
+## Agent architecture contract
+
+Agent is organized around:
+
+1. Lanes / Routes
+2. Filters / Adapters
+3. Endpoints / Decoders
+
+Semantic Controllers may connect natural-language intent to lanes, but they are defined outside Agent. Agent owns the lane/adapters/endpoints execution contract.
+
+See:
+
+- `docs/ARCHITECTURE.md`
+- `docs/LANES.md`
+- `docs/ADAPTERS.md`
+- `docs/ENDPOINTS.md`
+- `docs/SEMANTIC_CONTROLLERS.md`
+- `docs/CODEC_FRONTEND.md`
+<!-- agent-architecture-lanes-adapters-endpoints-v1:end -->
