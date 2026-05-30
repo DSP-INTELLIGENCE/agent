@@ -43,19 +43,62 @@ def _run_text_lane(prefix: str, text_parts: list[str], *, label: str) -> int:
     return int(result.returncode)
 
 
-def _status() -> int:
-    print("codec status: ok")
-    print("entrypoint: codec.py")
-    print("frontend: clean")
-    print("legacy_cli: agent-cli.py")
-    print("patch_cli: codec-patch.py")
-    print("llm_answer_lanes:")
-    print("  - prompt")
-    print("  - ground")
-    print("tool_control_lanes:")
-    print("  - patch")
-    return 0
+def _git_output(*args: str) -> str:
+    try:
+        import subprocess
+        result = subprocess.run(
+            ["git", *args],
+            cwd=Path(__file__).resolve().parent,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+    except Exception:
+        return ""
+    return result.stdout.strip()
 
+
+def _status_payload() -> dict:
+    status_short = _git_output("status", "--short", "--untracked-files=all")
+    branch = _git_output("branch", "--show-current") or "unknown"
+    head = _git_output("rev-parse", "--short", "HEAD") or "unknown"
+    return {
+        "codec_frontend": "available",
+        "entrypoint": "codec.py",
+        "answer_lanes": {
+            "prompt": "/prompt",
+            "ground": "/ground",
+        },
+        "patch_operator": "codec-patch.py",
+        "patch_workflow": ["review", "publish", "merge-cleanup"],
+        "repo": {
+            "branch": branch,
+            "head": head,
+            "clean": not bool(status_short),
+            "status_short": status_short,
+        },
+    }
+
+
+def _status(*, json_output: bool = False) -> int:
+    payload = _status_payload()
+    if json_output:
+        import json
+        print(json.dumps(payload, sort_keys=True))
+        return 0
+
+    print("codec frontend: available")
+    print("entrypoint: codec.py")
+    print("answer lanes:")
+    print("  prompt -> /prompt")
+    print("  ground -> /ground")
+    print("patch operator: codec-patch.py")
+    print("patch workflow: review -> publish -> merge-cleanup")
+    print("repo:")
+    print(f"  branch: {payload['repo']['branch']}")
+    print(f"  head: {payload['repo']['head']}")
+    print(f"  clean: {str(payload['repo']['clean']).lower()}")
+    return 0
 
 def _patch_args(args: argparse.Namespace) -> list[str]:
     patch_args = [
@@ -88,7 +131,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="codec.py", description="Clean Codec frontend.")
     sub = parser.add_subparsers(dest="command", required=True)
 
-    sub.add_parser("status", help="Show codec frontend status")
+    status = sub.add_parser("status", help="Show codec status and diagnostics", description="Show codec status and diagnostics")
+    status.add_argument("--json", action="store_true", dest="json_output", help="Emit JSON status")
 
     prompt = sub.add_parser("prompt", help="Raw/direct LLM lane")
     prompt.add_argument("text", nargs=argparse.REMAINDER, help="Text to send to the raw /prompt lane")
@@ -134,7 +178,7 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     if args.command == "status":
-        return _status()
+        return _status(json_output=bool(getattr(args, "json_output", False)))
     if args.command == "prompt":
         return _run_text_lane("/prompt", args.text, label="prompt")
     if args.command == "ground":
