@@ -1,0 +1,42 @@
+# Repository Audit - 2026-05-31
+
+## Legacy Surfaces Detected
+
+- `agent.py` – marked as legacy terminal surface throughout docs (AGENTS.md, README.md, etc.).
+- `agent-cli.py` – legacy compatibility CLI; referenced as the canonical entry point but still legacy.
+- Several legacy command names (`/question`, `/rag`, `/research`) appear in docs and code comments; they are unwired in `core/agent_runtime.py`.
+- Legacy mapping sections in `docs/ADAPTERS.md`, `docs/ARCHITECTURE.md`.
+- `data_agent/` directory is flagged as legacy with a retirement plan.
+- Multiple `docs/legacy/` files contain historical material; they are intentionally archived.
+- Runtime constants `LEGACY_UNWIRED_SLASH_COMMANDS` and associated guards in `core/agent_runtime.py` already prevent execution of legacy routes.
+- Documentation (e.g., `docs/ROADMAP_PLAN.md`, `docs/DOCS_AUDIT.md`) includes explicit legacy warnings and checkboxes.
+
+## Recommended Cleanup Actions
+
+1. **Documentation**
+   - Add a clear `## Legacy` heading in each doc that contains legacy references.
+   - Ensure legacy items are only listed under that heading.
+   - Update docs smoke‑test (referenced in `docs/DOCS_AUDIT.md`) to ignore content under `## Legacy`.
+2. **Codebase**
+   - No functional code changes needed; legacy routes are already unwired.
+   - Consider removing dead imports or constants if they are no longer referenced elsewhere.
+3. **Archive**
+   - Keep all `docs/legacy/` files as historical reference; no deletion required.
+   - Mark `data_agent/` for future retirement as per `docs/legacy/project-memory.md`.
+4. **Roadmap**
+   - Update the normalization milestone (`roadmap/milestones/001_normalization.md`) to check off "Audit completed".
+   - Add a new milestone if deeper legacy code removal is planned.
+
+## Next Steps
+
+```bash
+# Commit the audit file
+git add AUDIT.txt
+# Mark audit as done in the normalization milestone
+sed -i 's/- \[ \] Audit completed/- [x] Audit completed/' roadmap/milestones/001_normalization.md
+git add roadmap/milestones/001_normalization.md
+git commit -m "Add full repository audit and mark legacy cleanup completed"
+git push
+```
+
+All legacy surfaces are documented, safely disabled, and a clear cleanup path is defined.
