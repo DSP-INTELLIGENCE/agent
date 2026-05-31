@@ -4,11 +4,11 @@ This is the concise active roadmap. Use `docs/project-memory.md` for durable fac
 
 ## Current thesis
 
-Build a minimal local terminal agent core where slash roots are explicit command surfaces, `agent-cli.py` is the backend boundary, deterministic policy gates run before risky behavior, and repository mutation flows through patch packages.
+Build a minimal local agent core where slash roots are explicit command surfaces, `codec.py` is the operator/frontend surface, `codec-patch.py` is the staged patch operator, deterministic policy gates run before risky behavior, and repository mutation flows through patch packages.
 
 ## Checked milestones
 
-- [x] Establish `agent-cli.py` as the canonical terminal/batch front door.
+- [x] Establish `codec.py` as the canonical operator/frontend surface and `codec-patch.py` as the staged patch operator.
 - [x] Treat `agent.py` as legacy unless explicitly scoped.
 - [x] Keep patch ZIPs as the canonical repo mutation workflow.
 - [x] Add patch runner and package-builder docs.

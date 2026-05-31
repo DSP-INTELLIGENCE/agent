@@ -16,7 +16,7 @@ First read these files in order:
 8. docs/CODEX_PROMPTS.md
 
 Current architecture rules:
-- agent-cli.py is the canonical terminal/batch backend boundary.
+- codec.py is the canonical operator/frontend surface.
 - agent.py is legacy unless the task explicitly scopes it.
 - Slash roots are explicit command surfaces.
 - No hidden autonomy: inspect, plan, dry-run, approve, apply, report, commit, and push are distinct stages.

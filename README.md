@@ -24,7 +24,7 @@ instruction
 
 ## Current execution boundary
 
-`agent-cli.py` is the canonical terminal and batch entrypoint. `agent.py` is legacy unless a task explicitly scopes work there.
+`codec.py` is the canonical operator/frontend surface. `codec-patch.py` is the staged patch operator. `agent-cli.py` remains a backend/runtime boundary and legacy CLI compatibility surface. `agent.py` remains legacy terminal compatibility.
 
 Semantic routing, encoder layers, AgentSpec, and AgentScript are contract or frontend layers only until a later approved integration stage. They may inspect, render, validate, decode, route-preview, or build packets. They must not execute, fetch, search, mutate files, call tools, call an LLM, commit, or push.
 

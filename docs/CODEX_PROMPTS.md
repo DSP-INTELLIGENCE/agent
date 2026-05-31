@@ -7,7 +7,7 @@ Use short prompts by default. Use the long handoff only for risky architecture w
 Tell Codex:
 
 - Read `AGENTS.md` first.
-- Treat `agent-cli.py` as the backend boundary.
+- Treat `codec.py` as the canonical operator/frontend surface and `codec-patch.py` as the staged patch operator.
 - Treat `agent.py` as legacy unless the task explicitly scopes it.
 - Do not commit or push unless explicitly asked.
 - Deliver repo changes as a patch ZIP or a git-applyable patch.

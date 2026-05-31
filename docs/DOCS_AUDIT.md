@@ -4,7 +4,7 @@ Audit date: 2026-05-29
 
 ## Summary
 
-The repository already has the right ingredients for a safe agent workflow: explicit slash roots, `agent-cli.py` as the operational boundary, patch ZIPs, repo-local memory, Codex prompt construction, and deterministic/non-executing AgentSpec scaffolding.
+The repository already has the right ingredients for a safe agent workflow: explicit slash roots, `codec.py` as the operator/frontend surface, `codec-patch.py` as the staged patch operator, patch ZIPs, repo-local memory, Codex prompt construction, and deterministic/non-executing AgentSpec scaffolding.
 
 The cleanup problem is that these ideas are spread across many files with different generations of terminology. This makes new agents likely to revive old lane names, treat semantic routing as execution authority, or skip patch-stage discipline.
 
