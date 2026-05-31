@@ -506,5 +506,3 @@ find /tmp/patch-check -maxdepth 2 -type f | sort
 ```
 
 The output should show files directly under `/tmp/patch-check`, not inside an extra nested package directory.
-
-```
