@@ -1,6 +1,3 @@
-Use this as `INSTRUCTIONS.md`:
-
-````markdown
 # Repository Instructions
 
 Read the repository documents before making changes.
@@ -28,7 +25,7 @@ git diff --stat
 git diff
 find . -name .git -type d
 rg -n "TODO|FIXME|deprecated|legacy|obsolete|conflict|<<<<<<<|======|>>>>>>>" .
-````
+```
 
 ## Repository Layout
 
@@ -510,5 +507,4 @@ find /tmp/patch-check -maxdepth 2 -type f | sort
 
 The output should show files directly under `/tmp/patch-check`, not inside an extra nested package directory.
 
-```
 ```
