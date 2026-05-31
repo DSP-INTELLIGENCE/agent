@@ -5,3 +5,6 @@ __pycache__/
 data_agent/
 data/
 agent-cli.py
+audit-pack/
+data/patch/
+data/zips/
